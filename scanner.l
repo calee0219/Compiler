@@ -272,7 +272,10 @@ return {
 }
 
 \"[^"]*\" {
-    tokenString("string", yytext);
+    char tmp[MAX_LINE_LENGTH+1];
+    strcpy(tmp, yytext);
+    char * tok = strtok(tmp, "\"");
+    tokenString("string", tok);
 }
 
 \n {
