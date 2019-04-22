@@ -1,5 +1,7 @@
 %{
 #include <string.h>
+#include <stdio.h>
+#include <y.tab.h>
 
 #define MAX_LINE_LENGTH 256
 #define MAX_ID_LENGTH 256
@@ -132,106 +134,190 @@ id *new_id();
 }
 "(" {
     tokenString("delim", "(");
+    return('(');
 }
 ")" {
     tokenString("delim", ")");
+    return(')');
 }
 "," {
     tokenString("delim", ",");
+    return(',');
 }
 ";" {
     tokenString("delim", ";");
+    return(SEMICOLON);
 }
 "[" {
     tokenString("delim", "[");
+    return('[');
 }
 "]" {
     tokenString("delim", "]");
+    return(']');
 }
 "{" {
     tokenString("delim", "{");
+    return('{');
 }
 "}" {
     tokenString("delim", "}");
+    return('}');
 }
 "+" {
     tokenString("op", "+");
+    return(POS);
 }
 "-" {
     tokenString("op", "-");
+    return(NEG);
 }
 "*" {
     tokenString("op", "*");
+    return(MUL);
 }
 "/" {
     tokenString("op", "/");
+    return(DIV);
 }
 "%" {
     tokenString("op", "%");
+    return(MOD);
 }
 "=" {
     tokenString("op", "=");
+    return('=');
 }
 "<" {
     tokenString("op", "<");
+    return(LT);
 }
 "<=" {
     tokenString("op", "<=");
+    return(LE);
 }
 "!=" {
     tokenString("op", "!=");
+    return(NEQ);
 }
 ">=" {
     tokenString("op", ">=");
+    return(GE);
 }
 ">" {
     tokenString("op", ">");
+    return(GT);
 }
 "==" {
     tokenString("op", "==");
+    return(EQ);
 }
 "&&" {
     tokenString("op", "&&");
+    return(AND);
 }
 "||" {
     tokenString("op", "||");
+    return(OR);
 }
 "!" {
     tokenString("op", "!");
+    return(NOT);
 }
-read |
-boolean |
-while |
-do |
-if |
-else |
-true |
-false |
-for |
-const |
-int |
-print |
-bool |
-void |
-float |
-double |
-string |
-continue |
-break |
+read {
+    tokenString("kw", yytext);
+    return(READ);
+}
+boolean {
+    tokenString("kw", yytext);
+    return(BOOLEAN);
+}
+while {
+    tokenString("kw", yytext);
+    return(WHILE);
+}
+do {
+    tokenString("kw", yytext);
+    return(DO);
+}
+if {
+    tokenString("kw", yytext);
+    return(IF);
+}
+else {
+    tokenString("kw", yytext);
+    return(ELSE);
+}
+true {
+    tokenString("kw", yytext);
+    return(TRUE);
+}
+false {
+    tokenString("kw", yytext);
+    return(FALSE);
+}
+for {
+    tokenString("kw", yytext);
+    return(FOR);
+}
+const {
+    tokenString("kw", yytext);
+    return(CONST);
+}
+int {
+    tokenString("kw", yytext);
+    return(INT);
+}
+print {
+    tokenString("kw", yytext);
+    return(PRINT);
+}
+bool {
+    tokenString("kw", yytext);
+    return(BOOL);
+}
+void {
+    tokenString("kw", yytext);
+    return(VOID);
+}
+float {
+    tokenString("kw", yytext);
+    return(FLOAT);
+}
+double {
+    tokenString("kw", yytext);
+    return(DOUBLE);
+}
+string {
+    tokenString("kw", yytext);
+    return(STRING);
+}
+continue {
+    tokenString("kw", yytext);
+    return(CONTINUE);
+}
+break {
+    tokenString("kw", yytext);
+    return(BREAK);
+}
 return  {
     tokenString("kw", yytext);
+    return(RETURN);
 }
 
 0 |
 [1-9][0-9]* {
     tokenString("int", yytext);
+    return(INT_NUMBER);
 }
 [0-9]+\.[0-9]+  {
     tokenString("float", yytext);
+    return(FLOAT_NUMBER);
 }
 
 ([0-9]+(\.[0-9]+)?)([eE][-+]?[0-9]+)  {
     tokenString("sci", yytext);
+    return(SCI_NUMBER);
 }
 "\"" {
     LIST;
@@ -279,6 +365,7 @@ return  {
 <STR>\" {
     tokenString("string", strContent);
     BEGIN INITIAL;
+    return(STRVAR);
 }
 <STR>[^\\\n\"]  {
     LIST;
@@ -327,6 +414,7 @@ return  {
         set(&id_head,yytext);
     }
     tokenString("id",yytext);
+    return(ID);
 }
 
 . {

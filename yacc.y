@@ -8,62 +8,61 @@ extern char *yytext;            /* declared by lex */
 extern char buf[256];           /* declared in lex.l */
 %}
 
-// value
-%token INT_NUMBER   /* int */
-%token FLOAT_NUMBER /* float */
-%token SCI_NUMBER   /* sci */
-%token TRUE         /* true */
-%token FALSE        /* false */
-// delim
-%token SEMICOLON    /* ; */
-// id
-%token ID           /* identifier */
-// kw
-%token INT          /* keyword */
-%token DOUBLE       /* keyword */
-%token FLOAT        /* keyword */
-%token STRING       /* keyword */
-%token VOID         /* keyword */
-%token CONST        /* keyword */
-%token PRINT        /* keyword */
-%token READ         /* keyword */
-%token IF           /* keyword */
-%token ELSE         /* keyword */
-%token WHILE        /* keyword */
-%token DO           /* keyword */
-%token FOR          /* keyword */
-%token RETURN       /* keyword */
-%token BREAK        /* keyword */
-%token CONTINUE     /* keyword */
+/* value */
+%token INT_NUMBER FLOAT_NUMBER SCI_NUMBER
+%token TRUE FALSE
+%token STRVAR
+/* delim */
+%token SEMICOLON
+/* op */
+%token POS NEG MUL DIV MOD OR AND NOT LT LE EQ GE GT NEQ
+/* id */
+%token ID      /* identifier */
+/* kw */
+%token INT DOUBLE FLOAT STRING VOID CONST PRINT READ IF ELSE WHILE DO FOR RETURN BREAK CONTINUE BOOL BOOLEAN
+
+%nonassoc UMINUS
+%left MUL DIV MOD
+%left POS NEG
+%left LT LE EQ GE GT NEQ
+%right NOT
+%left OR AND
 
 %%
 
-program : decl_and_def_list
+program : declaration_list definition decl_and_def_list { printf("decl_and_def"); }
 	;
 
 empty : ;
 
-decl_and_def_list : decl_and_def_list declaration_list
-                  | decl_and_def_list definition_list
+decl_and_def_list : empty { printf("decl and def with empty"); }
+                  | decl_and_def_list declaration_list { printf("declaration"); }
+                  | decl_and_def_list definition_list { printf("definition"); }
                   ;
 
-declaration_list : declaration_list const_decl
-                 | declaration_list var_decl
-                 | declaration_list funct_decl
+declaration_list : empty
+                 | declaration_list const_decl { printf("const decl\n"); }
+                 | declaration_list var_decl { printf("var decl\n"); }
+                 | declaration_list funct_decl { printf("funct decl\n"); }
 				 ;
 
-definition_list : type identifier '(' argu_decl_list ')' compound_statement
+definition_list : definition_list definition
+                | definition
                 ;
-compound_statement :
-                   ;
+definition : type identifier '(' argu_decl_list ')' compound_statement { printf("Done definition with alg\n"); }
+           | type identifier '(' ')' compound_statement { printf("Done definition without alg\n"); }
+           ;
 
-// statement
+/* statement */
 compound_statement : '{' statement_list '}'
-          ;
-statement_list : empty
-               | statement_list statement
+                   | '{' '}'
+                   ;
+statement_list : statement_list statement
+               | statement
                ;
-statement : simple_statement
+statement : var_decl
+          | const_decl
+          | simple_statement
           | conditional_statement
           | while_statement
           | for_statement
@@ -100,45 +99,54 @@ jump_statement : RETURN expression SEMICOLON
 func_statement : identifier '(' argu_expression_list ')' SEMICOLON
                ;
 
-// expression
-expression_second : '(' expression ')'
-           | identifier
-           | array_reference
-           | INT_NUMBER
-           | FLOAT_NUMBER
-           | SCI_NUMBER
-           | TRUE
-           | FALSE
-           | funct_expression
+/* expression */
+                  ;
+expression_terminal : '(' expression ')'
+                    | identifier
+                    | array_reference
+                    | INT_NUMBER
+                    | FLOAT_NUMBER
+                    | SCI_NUMBER
+                    | STRVAR
+                    | TRUE
+                    | FALSE
+                    | funct_expression
+                    ;
+expression : expression OR expression
+           | expression AND expression
+           | NOT expression
+           | expression LT expression
+           | expression LE expression
+           | expression EQ expression
+           | expression GE expression
+           | expression GT expression
+           | expression NEQ expression
+           | expression POS expression
+           | expression NEG expression
+           | expression MUL expression
+           | expression DIV expression
+           | expression MOD expression
+           | NEG expression %prec UMINUS
+           | expression_terminal
            ;
-expression : boolean_expression
-           | expression_second '-' identifier
-           | expression_second '+' identifier
-           | expression_second '*' identifier
-           | expression_second '/' identifier
-           | expression_second '%' identifier
-           | '-' expression_second
-           | expression_second
-           ;
-boolean_expression : expression_second "||" identifier
-                   | expression_second "&&" identifier
-                   | '!' expression_second
-                   | expression_second '<' identifier
-                   | expression_second "<=" identifier
-                   | expression_second "==" identifier
-                   | expression_second ">=" identifier
-                   | expression_second '>' identifier
-                   | expression_second "!=" identifier
+boolean_expression : expression LT expression
+                   | expression LE expression
+                   | expression EQ expression
+                   | expression GE expression
+                   | expression GT expression
+                   | expression NEQ expression
+                   | expression_terminal
                    ;
-funct_expression : identifier '(' argu_expression_list')'
+funct_expression : identifier '(' ')' { printf("NULL funct argu\n"); }
+                 | identifier '(' argu_expression_list ')' { printf("UnNull argu\n"); }
                  ;
-argu_expression_list : argu_expression_list ',' argu_expression
-                     | argu_expression
+argu_expression_list : argu_expression_list ',' argu_expression { printf("list\n"); }
+                     | argu_expression { printf("argu"); }
                      ;
-argu_expression : expression
+argu_expression : expression { printf("expression"); }
                 ;
 
-// declaration defined here
+/* declaration defined here */
 var_decl : type identifier_list SEMICOLON
          | type identifier_assignment_list SEMICOLON
          | type array_reference_list SEMICOLON
@@ -147,23 +155,24 @@ var_decl : type identifier_list SEMICOLON
 const_decl : CONST var_decl
          ;
 funct_decl : type identifier '(' argu_decl_list ')' SEMICOLON
-         ;
+           | type identifier '(' ')' SEMICOLON
+           ;
 
-// argument declaration list
+/* argument declaration list */
 argu_decl_list : argu_decl_list ',' argu_decl
                | argu_decl
                ;
-argu_decl : type ID
+argu_decl : type identifier
           ;
 
-// identifier initialized
+/* identifier initialized */
 identifier_assignment_list : identifier_assignment_list ',' identifier_assignment
                            | identifier_assignment
                            ;
 identifier_assignment : identifier '=' expression
                       ;
 
-// variable
+/* variable */
 variable_reference : identifier
                    | array_reference
                    ;
@@ -179,27 +188,28 @@ array_reference_assignment : array_reference '=' initial_array
                            ;
 initial_array : '{' argu_expression_list '}'
               ;
-array_bracket_list : array_bracket_list '[' expression ']'
+array_bracket_list : array_bracket_list array_bracket
+                   | array_bracket
                    ;
+array_bracket : '[' expression ']'
+              ;
 
 type : INT
      | DOUBLE
      | FLOAT
      | STRING
      | VOID
+     | BOOL
      ;
 
-// id
+/* id */
 identifier_list : identifier_list ',' identifier
                 | identifier
                 ;
 identifier : ID
-	   ;
+	       ;
 
 %%
-
-void yyparse()
-{}
 
 int yyerror( char *msg )
 {
