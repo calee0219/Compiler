@@ -1,5 +1,7 @@
 # lex yacc binary
 scanner
+scanner.c
+yacc.tab.c
 lex.yy.c
 # Prerequisites
 *.d

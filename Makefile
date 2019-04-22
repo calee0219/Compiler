@@ -1,13 +1,28 @@
-all: lex ycc
+#makefile for scanner
+LEX			= lex
+LEXFN		= lex.l
+CC			= gcc
+CFLAGS		= -O2
+LIBS		= -lfl
+RM          = rm -f
+SCANNERN    = scanner
+SCANNERSN	= scanner.c
+TESTFN      = whole.cm
+YACC		= bison
+YACCRSN     = y.tab.c
+YACCFN      = yacc.y
 
-lex: scanner.l
-	lex ./scanner.l
 
-ycc: lex.yy.c
-	gcc ./lex.yy.c -ll -g -o scanner
+all: scanner
 
-start:
-	./scanner ./test.c
-
+scanner: lex yacc
+	$(CC) -o $(SCANNERN) $(SCANNERSN) $(YACCRSN) $(LIBS)
+lex:
+	$(LEX) -o $(SCANNERSN) $(LEXFN)
+yacc:
+	$(YACC) -o $(YACCRSN) $(YACCFN)
+test:
+	./$(SCANNERN) $(TESTFN)
 clean:
-	rm -rf ./lex.yy.c ./scanner
+	$(RM) $(SCANNERN)
+	$(RM) $(SCANNERSN)
