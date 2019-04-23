@@ -32,7 +32,7 @@ extern char buf[256];           /* declared in lex.l */
 
 program
     : declaration_list definition decl_and_def_list
-	;
+    ;
 
 empty : ;
 
