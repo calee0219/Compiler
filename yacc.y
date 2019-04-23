@@ -150,31 +150,40 @@ expression_terminal
     | funct_expression
     ;
 expression
-    : expression OR expression
-    | expression AND expression
-    | NOT expression
-    | expression LT expression
-    | expression LE expression
-    | expression EQ expression
-    | expression GE expression
-    | expression GT expression
-    | expression NEQ expression
-    | expression POS expression
-    | expression NEG expression
-    | expression MUL expression
-    | expression DIV expression
-    | expression MOD expression
-    | NEG expression %prec UMINUS
-    | expression_terminal
+    : expression_2
+    | expression_2 OR expression
+    ;
+expression_2
+    : expression_3
+    | expression_3 AND expression_2
+    ;
+expression_3
+    : boolean_expression
+    | NOT expression_3
+    ;
+expression_5
+    : expression_6
+    | expression_6 POS expression_5
+    | expression_6 NEG expression_5
+    ;
+expression_6
+    : expression_7
+    | expression_7 MUL expression_6
+    | expression_7 DIV expression_6
+    | expression_7 MOD expression_6
+    ;
+expression_7
+    : expression_terminal
+    | NEG expression_7 %prec UMINUS
     ;
 boolean_expression
-    : expression LT expression
-    | expression LE expression
-    | expression EQ expression
-    | expression GE expression
-    | expression GT expression
-    | expression NEQ expression
-    | expression_terminal
+    : expression_5
+    | expression_5 LT boolean_expression
+    | expression_5 LE boolean_expression
+    | expression_5 EQ boolean_expression
+    | expression_5 GE boolean_expression
+    | expression_5 GT boolean_expression
+    | expression_5 NEQ boolean_expression
     ;
 funct_expression
     : identifier '(' ')'

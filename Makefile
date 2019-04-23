@@ -42,7 +42,6 @@ check:
 	./parser ./testdata/10
 	./parser ./testdata/arithmetic
 	./parser ./testdata/boolean
-	./parser ./testdata/complex
 	./parser ./testdata/func
 	./parser ./testdata/general
 	./parser ./testdata/mix
@@ -57,5 +56,6 @@ check:
 	./parser ./testdata/err/2
 	./parser ./testdata/err/3
 	./parser ./testdata/err/5
+	./parser ./testdata/complex
 	./parser ./testdata/err/exprfunccall
 	./parser ./testdata/err/noprogram
