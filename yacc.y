@@ -30,29 +30,30 @@ extern char buf[256];           /* declared in lex.l */
 
 %%
 
-program : declaration_list definition decl_and_def_list { printf("decl_and_def"); }
+program : declaration_list definition decl_and_def_list
 	;
 
 empty : ;
 
-decl_and_def_list : empty { printf("decl and def with empty"); }
-                  | decl_and_def_list declaration_list { printf("declaration"); }
-                  | decl_and_def_list definition_list { printf("definition"); }
+decl_and_def_list : empty
+                  | decl_and_def_list const_decl
+                  | decl_and_def_list var_decl
+                  | decl_and_def_list funct_decl
+                  | decl_and_def_list definition_list
                   ;
 
 declaration_list : empty
-                 | declaration_list const_decl { printf("const decl\n"); }
-                 | declaration_list var_decl { printf("var decl\n"); }
-                 | declaration_list funct_decl { printf("funct decl\n"); }
+                 | declaration_list const_decl
+                 | declaration_list var_decl
+                 | declaration_list funct_decl
 				 ;
 
 definition_list : definition_list definition
                 | definition
                 ;
-definition : type identifier '(' argu_decl_list ')' compound_statement { printf("Done definition with alg\n"); }
-           | type identifier '(' ')' compound_statement { printf("Done definition without alg\n"); }
+definition : type identifier '(' argu_decl_list ')' compound_statement
+           | type identifier '(' ')' compound_statement
            ;
-
 /* statement */
 compound_statement : '{' statement_list '}'
                    | '{' '}'
@@ -86,10 +87,16 @@ while_statement : DO compound_statement WHILE '(' boolean_expression ')' SEMICOL
 for_statement : FOR '(' initial_expression SEMICOLON control_expression SEMICOLON increment_expression ')' compound_statement
               ;
 initial_expression : expression
+                   | identifier_assignment
+                   | array_reference_assignment
                    ;
 control_expression : expression
+                   | identifier_assignment
+                   | array_reference_assignment
                    ;
 increment_expression : expression
+                     | identifier_assignment
+                     | array_reference_assignment
                      ;
 
 jump_statement : RETURN expression SEMICOLON
@@ -137,13 +144,13 @@ boolean_expression : expression LT expression
                    | expression NEQ expression
                    | expression_terminal
                    ;
-funct_expression : identifier '(' ')' { printf("NULL funct argu\n"); }
-                 | identifier '(' argu_expression_list ')' { printf("UnNull argu\n"); }
+funct_expression : identifier '(' ')'
+                 | identifier '(' argu_expression_list ')'
                  ;
-argu_expression_list : argu_expression_list ',' argu_expression { printf("list\n"); }
-                     | argu_expression { printf("argu"); }
+argu_expression_list : argu_expression_list ',' argu_expression
+                     | argu_expression
                      ;
-argu_expression : expression { printf("expression"); }
+argu_expression : expression
                 ;
 
 /* declaration defined here */
