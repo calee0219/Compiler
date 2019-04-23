@@ -1,0 +1,8 @@
+#pragma source off
+#pragma token off
+#pragma statistic off
+
+float main() {
+    int a;
+    a = (34*!33)%230*23+ffd-funce(433)-(-fffe)+329-1e8;
+}

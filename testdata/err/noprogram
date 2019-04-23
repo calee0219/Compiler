@@ -1,0 +1,5 @@
+#pragma source off
+#pragma token off
+#pragma statistic off
+
+int a, b, c, d, e;

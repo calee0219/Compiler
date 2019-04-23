@@ -1,0 +1,25 @@
+#pragma source off
+#pragma token off
+#pragma statistic off
+
+const int a = 1;
+
+int main() {
+    a = ------a;
+    }
+
+    const float a = 1;
+
+    int main() {
+        a = ------a;
+        }
+
+        const string a = 1;
+
+        const bool a = 1;
+
+        int main() {
+            a = ------a;
+            }
+
+             double a[3] = {1};

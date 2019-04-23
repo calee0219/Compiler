@@ -1,5 +1,7 @@
 # lex yacc binary
 scanner
+parser
+parser.h
 scanner.c
 yacc.tab.c
 y.tab.h

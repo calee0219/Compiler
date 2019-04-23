@@ -1,0 +1,26 @@
+#pragma source off
+#pragma token off
+#pragma statistic off
+
+int main(int a, int b) {
+    int a, b, c = 4;
+    const int a = "funcdr";
+    functi(a, b, c+1*4);
+    int d = funcdr();
+    return funct();
+}
+
+int d = er();
+
+void er(int b) {
+    
+}
+
+const int ee = "12344";
+const float ee = 3.433E3;
+const string deee = 12344566;
+const int de = dff();
+
+float errr() {
+
+}

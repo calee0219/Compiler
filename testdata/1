@@ -1,0 +1,10 @@
+#pragma source off
+#pragma token off
+#pragma statistic off
+
+int main() {
+    const int a = -1;
+        int h[-2] = {}; //error why?
+        int i[-------------0] = {}; //error why?
+        int j[-1] = {}; //error why?
+        }

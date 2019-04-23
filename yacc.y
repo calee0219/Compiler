@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef debug
+int debug = 1;
+#else
+int debug = 0;
+#endif
+
 extern int linenum;             /* declared in lex.l */
 extern FILE *yyin;              /* declared by lex */
 extern char *yytext;            /* declared by lex */
@@ -77,6 +83,7 @@ statement
     | for_statement
     | jump_statement
     | func_statement
+    | compound_statement
     ;
 simple_statement
     : variable_reference '=' expression SEMICOLON
@@ -103,16 +110,19 @@ initial_expression
     : expression
     | identifier_assignment
     | array_reference_assignment
+    | empty
     ;
 control_expression
     : expression
     | identifier_assignment
     | array_reference_assignment
+    | empty
     ;
 increment_expression
     : expression
     | identifier_assignment
     | array_reference_assignment
+    | empty
     ;
 
 jump_statement
@@ -178,10 +188,17 @@ argu_expression
 
 /* declaration defined here */
 var_decl
-    : type identifier_list SEMICOLON
-    | type identifier_assignment_list SEMICOLON
-    | type array_reference_list SEMICOLON
-    | type array_reference_assignment_list SEMICOLON
+    : type var_del_all_list SEMICOLON
+    ;
+var_del_all_list
+    : var_del_all { if(debug) printf("empty\n"); }
+    | var_del_all_list ',' var_del_all { if(debug) printf("id_list\n"); }
+    ;
+var_del_all
+    : identifier_list
+    | identifier_assignment_list
+    | array_reference_list { if(debug) printf("array\n"); }
+    | array_reference_assignment_list { if(debug) printf("array ass\n"); }
     ;
 const_decl
     : CONST var_decl
@@ -219,21 +236,22 @@ array_reference_list
     | array_reference
     ;
 array_reference
-    : identifier array_bracket_list
+    : identifier array_bracket_list { if(debug) printf("array\n"); }
     ;
 array_reference_assignment_list
     : array_reference_assignment_list ',' array_reference_assignment
-    | array_reference_assignment
+    | array_reference_assignment { if(debug) printf("array_ref ass not list\n"); }
     ;
 array_reference_assignment
-    : array_reference '=' initial_array
+    : array_reference '=' initial_array { if(debug) printf("arr assignment\n"); }
     ;
 initial_array
     : '{' argu_expression_list '}'
+    | '{' '}'
     ;
 array_bracket_list
     : array_bracket_list array_bracket
-    | array_bracket
+    | array_bracket { if(debug) printf("[]\n"); }
     ;
 array_bracket
     : '[' expression ']'

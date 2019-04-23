@@ -1,7 +1,7 @@
 %{
 #include <string.h>
 #include <stdio.h>
-#include <y.tab.h>
+#include <parser.h>
 
 #define MAX_LINE_LENGTH 256
 #define MAX_ID_LENGTH 256
