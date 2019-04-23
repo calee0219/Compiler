@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef debug
+#ifdef DEBUG
 int debug = 1;
 #else
 int debug = 0;
@@ -47,7 +47,7 @@ decl_and_def_list
     | decl_and_def_list const_decl
     | decl_and_def_list var_decl
     | decl_and_def_list funct_decl
-    | decl_and_def_list definition_list
+    | decl_and_def_list definition
     ;
 
 declaration_list
@@ -57,10 +57,12 @@ declaration_list
     | declaration_list funct_decl
     ;
 
+/*
 definition_list
     : definition_list definition
     | definition
     ;
+*/
 definition
     : type identifier '(' argu_decl_list ')' compound_statement
     | type identifier '(' ')' compound_statement
@@ -195,10 +197,10 @@ var_del_all_list
     | var_del_all_list ',' var_del_all { if(debug) printf("id_list\n"); }
     ;
 var_del_all
-    : identifier_list
-    | identifier_assignment_list
-    | array_reference_list { if(debug) printf("array\n"); }
-    | array_reference_assignment_list { if(debug) printf("array ass\n"); }
+    : identifier { if(debug) printf("id\n"); }
+    | identifier_assignment { if(debug) printf("id_ass\n"); }
+    | array_reference { if(debug) printf("array\n"); }
+    | array_reference_assignment { if(debug) printf("array ass\n"); }
     ;
 const_decl
     : CONST var_decl
@@ -207,7 +209,6 @@ funct_decl
     : type identifier '(' argu_decl_list ')' SEMICOLON
     | type identifier '(' ')' SEMICOLON
     ;
-
 /* argument declaration list */
 argu_decl_list
     : argu_decl_list ',' argu_decl
@@ -218,10 +219,12 @@ argu_decl
     ;
 
 /* identifier initialized */
+/*
 identifier_assignment_list
     : identifier_assignment_list ',' identifier_assignment
     | identifier_assignment
     ;
+*/
 identifier_assignment
     : identifier '=' expression
     ;
@@ -231,17 +234,21 @@ variable_reference
     : identifier
     | array_reference
     ;
+/*
 array_reference_list
     : array_reference_list ',' array_reference
     | array_reference
     ;
+*/
 array_reference
-    : identifier array_bracket_list { if(debug) printf("array\n"); }
+    : identifier array_bracket_list { if(debug) printf("array list\n"); }
     ;
+/*
 array_reference_assignment_list
     : array_reference_assignment_list ',' array_reference_assignment
     | array_reference_assignment { if(debug) printf("array_ref ass not list\n"); }
     ;
+*/
 array_reference_assignment
     : array_reference '=' initial_array { if(debug) printf("arr assignment\n"); }
     ;
@@ -250,11 +257,11 @@ initial_array
     | '{' '}'
     ;
 array_bracket_list
-    : array_bracket_list array_bracket
+    : array_bracket_list array_bracket { if(debug) printf("list of array bracket\n"); }
     | array_bracket { if(debug) printf("[]\n"); }
     ;
 array_bracket
-    : '[' expression ']'
+    : '[' expression ']' { if(debug) printf("bracket\n"); }
     ;
 
 type
@@ -267,10 +274,12 @@ type
     ;
 
 /* id */
+/*
 identifier_list
     : identifier_list ',' identifier
     | identifier
     ;
+*/
 identifier
     : ID
     ;

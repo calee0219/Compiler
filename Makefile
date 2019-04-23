@@ -53,9 +53,9 @@ check:
 	./parser ./testdata/whilefor
 	./parser ./testdata/err/1
 	./parser ./testdata/6
+	./parser ./testdata/err/4
 	./parser ./testdata/err/2
 	./parser ./testdata/err/3
-	./parser ./testdata/err/4
 	./parser ./testdata/err/5
 	./parser ./testdata/err/exprfunccall
 	./parser ./testdata/err/noprogram
